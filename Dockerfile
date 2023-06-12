@@ -1,12 +1,19 @@
-FROM centos:latest
-MAINTAINER abhijit.psonawane@gmail.com
-RUN yum install -y httpd 
-RUN yum install -y zip
-RUN yum install -y unzip
-ADD https://www.free-css.com/assets/files/free-css-templates/download/page254/photogenic.zip /var/www/html/
-WORKDIR /var/www/html/
-RUN unzip photogenic.zip
-RUN cp -rvf photogenic/* .
-RUN rm -rf photogenic photogenic.zip
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
-EXPOSE 80 22
+FROM ubuntu:20.04
+ARG SDLC_ARG
+ENV SDLC_ENV=${SDLC_ARG}
+RUN echo "ARG value for SDLC_ENV is $SDLC_ENV"
+RUN echo "ENV value for SDLC_ENV is $SDLC_ENV"
+# To Set a default value
+# ARG SDLC_ENV=test
+ENV DEBIAN_FRONTEND=noninteractive
+# Install dependencies
+RUN apt-get update
+RUN apt-get install -y apache2
+RUN apt-get install -y apache2-utils
+# Replace content of Apache Home Page
+RUN echo "Docker Image created using Dockerfile for $SDLC_ENV" >
+/var/www/html/index.html
+# Expose Container Port
+EXPOSE 80
+# Execute command at container launch
+CMD ["apache2ctl", "-D", "FOREGROUND"]
